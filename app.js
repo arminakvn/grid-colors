@@ -5,17 +5,20 @@
   leafleg = L.leaflegend().color1("red").color2("blue").steps(4).xsize(4).ysize(4).makeGrid();
 
   getStyle = function(feature) {
-    console.log("feature before getStyle: ", feature);
+  // console.log(leafleg.getColorByRangeAndSize(feature.properties.per_capt, feature.properties.density)());
     return {
       weight: 2,
       opacity: 0.1,
       color: "black",
       fillOpacity: 0.7,
-      fillColor: leafleg.getColorByRangeAndSize(feature.properties.per_capt, feature.properties.density)
+      fillColor: leafleg.getColorByRangeAndSize(feature.properties.per_capt, feature.properties.density).c,
+      className: "range-" + leafleg.getColorByRangeAndSize(feature.properties.per_capt, feature.properties.density).i
     };
   };
 
   onEachFeature = function(feature, layer) {
+    // console.log(map._container);
+    // console.log(document.getElementsByClassName("leaflet-container").getElementsByTagName("g"));
     layer.on({
       mousemove: mousemove,
       mouseout: mouseout,
@@ -26,12 +29,12 @@
   mousemove = function(e) {
     var colorIndex, layer, legendElement;
     layer = e.target;
-    console.log("layer", layer);
+    
     colorIndex = leafleg.getIndexByColor(e);
     legendElement = L.DomUtil.get("" + colorIndex);
     $(legendElement).css('border', '3px solid black');
     $(legendElement).css('border-radius', '10%');
-    console.log("layer before set style: ", layer);
+    
     layer.setStyle({
       weight: 3,
       opacity: 0.3,
@@ -61,21 +64,21 @@
 
   highlightByLegend = function(legendColor) {
     var key, layer, mapLayers, val, xVal, x_val, yVal, y_val, _ref, _results;
-    console.log("map: ", map);
-    console.log(leafleg.options.index_dicts);
+    
+    
     _ref = leafleg.options.index_dicts;
     for (key in _ref) {
       val = _ref[key];
-      console.log(chroma.color(legendColor).hex());
+      
       if (val.color.hex() === chroma.color(legendColor).hex()) {
         xVal = val.x_val;
         yVal = val.y_val;
       }
     }
-    console.log(legendColor);
-    console.log(map.getPanes().overlayPane.children[0]);
+    
+    
     mapLayers = map._layers;
-    console.log(mapLayers);
+    
     _results = [];
     for (key in mapLayers) {
       val = mapLayers[key];
@@ -123,9 +126,9 @@
 
   legend.addTo(map);
 
-  console.log("map: ", map);
+  
 
-  console.log(L.leaflegend());
+  
 
   $("li .swatch").hover((function() {
     if ($(this).attr("id") !== void 0) {

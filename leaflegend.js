@@ -322,16 +322,16 @@
     },
     getIndexByColor: function(event) {
       var e, each, x_in, x_out, y_in, y_out, _i, _len, _ref;
-      console.log("event", event);
+      
       _ref = this.options.gdrow;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         each = _ref[_i];
-        console.log("each.x", each.x);
+        
         x_in = (each.x.split("-"))[0];
         x_out = (each.x.split("-"))[1];
         y_in = (each.y.split("-"))[0];
         y_out = (each.y.split("-"))[1];
-        console.log("x_in", x_in);
+        
         try {
           if (each.c.hex() === event.target.options.fillColor.hex()) {
             try {
@@ -350,8 +350,8 @@
     },
     getColorByRangeAndSize: function(x_val, y_val) {
       var e, index_dicts, ix_intervals, iy_intervals;
-      console.log("@options.xintervalSize", this.options.xintervalSize);
-      console.log("@options.yintervalSize", this.options.yintervalSize);
+      
+      
       ix_intervals = Math.floor(x_val / this.options.xintervalSize);
       iy_intervals = Math.floor(y_val / this.options.yintervalSize);
       this.cellColorIndex = (iy_intervals * this.options.xsize) + ix_intervals;
@@ -366,10 +366,10 @@
           y: this.cellColor.y,
           color: this.cellColor.c
         });
-        console.log("index_dicts: ", index_dicts);
+        
         this.indexDicts(index_dicts);
-        console.log("@options.index_dicts: ", this.options.index_dicts);
-        return this.cellColor.c;
+        
+        return this.cellColor;
       } catch (_error) {
         e = _error;
         return this.cellColor = NaN;
