@@ -278,8 +278,11 @@
       this.gdrow(gdrow);
       return this;
     },
-    getLegendHTML: function() {
-      var col, colum_from, from, gdrow, gridwidth, i, increment_in_em, j, legend, legendObject, legendRowObject, legend_el, to, xintervalSize, xmin, xsize, yintervalSize, ymin, ysize, _i, _j, _k;
+    getLegendHTML: function(map) {
+      var col, colum_from, div, from, gdrow, gridwidth, i, increment_in_em, j, legend, legendObject, legendRowObject, legend_el, textControl, to, xintervalSize, xmin, xsize, yintervalSize, ymin, ysize, _i, _j, _k;
+      console.log(this);
+      this.map = map;
+      this._m = map;
       xmin = this.options.xmin;
       ymin = this.options.ymin;
       xintervalSize = this.options.xintervalSize;
@@ -314,7 +317,55 @@
         j++;
       }
       legend.push("<ul style=\"width: " + gridwidth + "px; list-style-type:none\">" + legendObject.join("") + "</ul>");
-      return legend;
+      textControl = L.Control.extend({
+        options: {
+          position: "bottomright"
+        },
+        onAdd: (function(_this) {
+          return function(map) {
+            if (_this._m === void 0) {
+              _this._m = map;
+            }
+            if (_this._legendDomEl === void 0) {
+              _this._legendDomEl = L.DomUtil.create("div", "info legend");
+              _this._legendDomEl.setAttribute("id", "leaflegend");
+              _this._m.getPanes().overlayPane.appendChild(_this._legendDomEl);
+            }
+          };
+        })(this)
+      });
+      div = document.getElementById("leaflegend");
+      div.innerHTML += legend;
+      L.DomEvent.addListener(div, 'mouseover', (function(e) {
+        var key, mapLayers, value;
+        mapLayers = this._m._layers;
+        for (key in mapLayers) {
+          value = mapLayers[key];
+          if (value.options && value.options.className === ("range-" + e.target.id)) {
+            value.setStyle({
+              weight: 3,
+              opacity: 1,
+              fillOpacity: 0.9
+            });
+          }
+        }
+      }), this);
+      L.DomEvent.addListener(div, 'mouseout', (function(e) {
+        var key, mapLayers, value;
+        mapLayers = this._m._layers;
+        console.log(this._m);
+        for (key in mapLayers) {
+          value = mapLayers[key];
+          if (value.options && value.options.className === ("range-" + e.target.id)) {
+            value.setStyle({
+              weight: 1,
+              opacity: 0.1,
+              fillOpacity: 1
+            });
+          }
+        }
+      }), this);
+      div;
     },
     addTo: function(map) {
       map.addLayer(this);
@@ -322,16 +373,13 @@
     },
     getIndexByColor: function(event) {
       var e, each, x_in, x_out, y_in, y_out, _i, _len, _ref;
-      
       _ref = this.options.gdrow;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         each = _ref[_i];
-        
         x_in = (each.x.split("-"))[0];
         x_out = (each.x.split("-"))[1];
         y_in = (each.y.split("-"))[0];
         y_out = (each.y.split("-"))[1];
-        
         try {
           if (each.c.hex() === event.target.options.fillColor.hex()) {
             try {
@@ -350,8 +398,6 @@
     },
     getColorByRangeAndSize: function(x_val, y_val) {
       var e, index_dicts, ix_intervals, iy_intervals;
-      
-      
       ix_intervals = Math.floor(x_val / this.options.xintervalSize);
       iy_intervals = Math.floor(y_val / this.options.yintervalSize);
       this.cellColorIndex = (iy_intervals * this.options.xsize) + ix_intervals;
@@ -366,9 +412,7 @@
           y: this.cellColor.y,
           color: this.cellColor.c
         });
-        
         this.indexDicts(index_dicts);
-        
         return this.cellColor;
       } catch (_error) {
         e = _error;

@@ -2,23 +2,21 @@
 (function() {
   var closeTooltip, getStyle, highlightByLegend, leafleg, legend, map, mousemove, mouseout, onEachFeature, popup, statesLayer, zoomToFeature;
 
-  leafleg = L.leaflegend().color1("red").color2("blue").steps(4).xsize(4).ysize(4).makeGrid();
+  leafleg = L.leaflegend().color1("yellow").color2("blue").steps(4).xsize(4).ysize(4).makeGrid();
 
   getStyle = function(feature) {
-  // console.log(leafleg.getColorByRangeAndSize(feature.properties.per_capt, feature.properties.density)());
     return {
-      weight: 2,
+      weight: 1,
       opacity: 0.1,
       color: "black",
-      fillOpacity: 0.7,
+      fillOpacity: 1,
       fillColor: leafleg.getColorByRangeAndSize(feature.properties.per_capt, feature.properties.density).c,
-      className: "range-" + leafleg.getColorByRangeAndSize(feature.properties.per_capt, feature.properties.density).i
+      className: "range-" + leafleg.getColorByRangeAndSize(feature.properties.per_capt, feature.properties.density).i,
+      id: "range-" + leafleg.getColorByRangeAndSize(feature.properties.per_capt, feature.properties.density).i
     };
   };
 
   onEachFeature = function(feature, layer) {
-    // console.log(map._container);
-    // console.log(document.getElementsByClassName("leaflet-container").getElementsByTagName("g"));
     layer.on({
       mousemove: mousemove,
       mouseout: mouseout,
@@ -29,12 +27,12 @@
   mousemove = function(e) {
     var colorIndex, layer, legendElement;
     layer = e.target;
-    
+    console.log(e);
     colorIndex = leafleg.getIndexByColor(e);
+    console.log("index", colorIndex);
     legendElement = L.DomUtil.get("" + colorIndex);
     $(legendElement).css('border', '3px solid black');
     $(legendElement).css('border-radius', '10%');
-    
     layer.setStyle({
       weight: 3,
       opacity: 0.3,
@@ -64,21 +62,15 @@
 
   highlightByLegend = function(legendColor) {
     var key, layer, mapLayers, val, xVal, x_val, yVal, y_val, _ref, _results;
-    
-    
     _ref = leafleg.options.index_dicts;
     for (key in _ref) {
       val = _ref[key];
-      
       if (val.color.hex() === chroma.color(legendColor).hex()) {
         xVal = val.x_val;
         yVal = val.y_val;
       }
     }
-    
-    
     mapLayers = map._layers;
-    
     _results = [];
     for (key in mapLayers) {
       val = mapLayers[key];
@@ -116,19 +108,15 @@
 
   legend.onAdd = function(map) {
     var div, leg_div;
-    leafleg = L.leaflegend().color1("red").color2("blue").steps(4).xsize(4).ysize(4).makeGrid();
+    leafleg = L.leaflegend().color1("yellow").color2("blue").steps(4).xsize(4).ysize(4).makeGrid();
+    console.log("L", L);
     div = void 0;
     div = document.getElementById("leaflegend");
-    leg_div = leafleg.getLegendHTML();
-    div.innerHTML += leg_div;
+    leg_div = leafleg.getLegendHTML(map);
     return div;
   };
 
   legend.addTo(map);
-
-  
-
-  
 
   $("li .swatch").hover((function() {
     if ($(this).attr("id") !== void 0) {

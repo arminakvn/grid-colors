@@ -217,9 +217,7 @@ L.LeafLegend = L.Class.extend(
 
     if legend_el is undefined
         legend_el = L.DomUtil.create("div", "info legend")
-      
         legend_el.setAttribute("id", "leaflegend")
-
         $( "body" ).append(legend_el)
     else 
         legend_el=@options.legend_el
@@ -247,7 +245,6 @@ L.LeafLegend = L.Class.extend(
     #   for j in [0...ysize]
     #     if @options.cols1[((i) * (xsize)) + (j)] is undefined
     #       # n = n + 1
-    #       console.log "@options.cols1[((i) * (xsize)) + (j)] is undefined for i=", i, "and for j=", j
     #     else
     #       gdrow.push ({i: n, x: (j) * gridwidth, y: (i) * gridwidth, c: @options.cols1[((i) * (xsize)) + (j)]})
     #       n = n + 1
@@ -289,7 +286,10 @@ L.LeafLegend = L.Class.extend(
 
     this
 
-  getLegendHTML: () ->
+  getLegendHTML: (map) ->
+    console.log @
+    this.map = map
+    @_m = map
     xmin =@options.xmin
     ymin =@options.ymin
     xintervalSize = @options.xintervalSize
@@ -313,7 +313,6 @@ L.LeafLegend = L.Class.extend(
         for i in [0...xsize]
             legendRowObject.push("<span class=\"swatch\" style=\"background:" + gdrow[(j*xsize)+i].c + "; position: initial;  display:block; float:left; height:" + @options.cell_width + "px; width:" + @options.cell_width+ "px;\"" + "id=" + gdrow[(j*xsize)+i].i + "></span> ")
             legendRowObject.push("<span class=\"swatch\" style=\"background:white; position: relative; display:block; float:left; height:" + @options.cell_width + "px; width:" + @options.gutter_width+ "px;\"" + "></span> ")
-
             i++
         to = gdrow[j+1].i * xintervalSize
         gridwidth = @options.gridwidth + @options.row_label_width
@@ -322,7 +321,43 @@ L.LeafLegend = L.Class.extend(
         # here a lookup table needs to be made to have dictionaties that has i which is index equals a range wich is the values it covers
         j++
     legend.push "<ul style=\"width: " + gridwidth + "px; list-style-type:none\">" + legendObject.join("") + "</ul>" 
-    return legend
+
+    textControl = L.Control.extend(
+      options:
+        position: "bottomright"
+      onAdd: (map) =>
+        @_m = map if @_m is undefined  
+        if @_legendDomEl is undefined
+            @_legendDomEl = L.DomUtil.create("div", "info legend")
+            @_legendDomEl.setAttribute("id", "leaflegend")
+            @_m.getPanes().overlayPane.appendChild(@_legendDomEl)
+        return
+    )
+    div = document.getElementById("leaflegend")
+    div.innerHTML += legend
+    L.DomEvent.addListener div, 'mouseover', ((e) ->
+        mapLayers = @_m._layers
+        for key, value of mapLayers
+            if value.options and value.options.className == "range-#{e.target.id}"
+                value.setStyle
+                    weight: 3
+                    opacity: 1
+                    fillOpacity: 0.9
+        return
+    ), this
+    L.DomEvent.addListener div, 'mouseout', ((e) ->
+        mapLayers = @_m._layers
+        console.log @_m
+        for key, value of mapLayers
+            if value.options and value.options.className == "range-#{e.target.id}"
+                value.setStyle
+                    weight: 1
+                    opacity: 0.1
+                    fillOpacity: 1
+        return
+    ), this
+    div
+    return
 
   addTo: (map) ->
     map.addLayer this
@@ -330,14 +365,13 @@ L.LeafLegend = L.Class.extend(
 
   
   getIndexByColor: (event) ->
-    console.log "event" , event
     for each in @options.gdrow
-        console.log "each.x", each.x
+
         x_in = ((each.x).split "-")[0]
         x_out = ((each.x).split "-")[1]
         y_in = ((each.y).split "-")[0]
         y_out = ((each.y).split "-")[1]
-        console.log "x_in", x_in
+
         try
             if each.c.hex() == event.target.options.fillColor.hex() #(event.target.feature.properties.density in [x_in...x_out]) and (event.target.feature.properties.per_capt in [y_in...y_out])
                 try
@@ -349,8 +383,6 @@ L.LeafLegend = L.Class.extend(
         
 
   getColorByRangeAndSize: (x_val, y_val) ->
-    console.log "@options.xintervalSize",@options.xintervalSize
-    console.log "@options.yintervalSize",@options.yintervalSize
     ix_intervals = Math.floor(x_val / @options.xintervalSize)
     iy_intervals = Math.floor(y_val / @options.yintervalSize)
     @cellColorIndex = ((iy_intervals)* @options.xsize) + ix_intervals 
@@ -358,10 +390,10 @@ L.LeafLegend = L.Class.extend(
     try
         index_dicts = @options.index_dicts
         index_dicts.push ({i: @cellColor.i, x_val: x_val, y_val: y_val, x: @cellColor.x, y: @cellColor.y, color: @cellColor.c})
-        console.log "index_dicts: ", index_dicts
+
         @.indexDicts index_dicts
-        console.log "@options.index_dicts: ", @options.index_dicts
-        return @cellColor.c
+
+        return @cellColor
     catch e
         @cellColor = NaN
     
