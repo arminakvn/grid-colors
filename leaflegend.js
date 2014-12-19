@@ -307,7 +307,7 @@
         colum_from = gdrow[j];
         for (i = _k = 0; 0 <= xsize ? _k < xsize : _k > xsize; i = 0 <= xsize ? ++_k : --_k) {
           legendRowObject.push("<span class=\"swatch\" style=\"background:" + gdrow[(j * xsize) + i].c + "; position: initial;  display:block; float:left; height:" + this.options.cell_width + "px; width:" + this.options.cell_width + "px;\"" + "id=" + gdrow[(j * xsize) + i].i + "></span> ");
-          legendRowObject.push("<span class=\"swatch\" style=\"background:white; position: relative; display:block; float:left; height:" + this.options.cell_width + "px; width:" + this.options.gutter_width + "px;\"" + "></span> ");
+          legendRowObject.push("<span class=\"swatch-gutter\" style=\"background:white; position: relative; display:block; float:left; height:" + this.options.cell_width + "px; width:" + this.options.gutter_width + "px;\"" + "></span> ");
           i++;
         }
         to = gdrow[j + 1].i * xintervalSize;
@@ -338,13 +338,18 @@
       div.innerHTML += legend;
       L.DomEvent.addListener(div, 'mouseover', (function(e) {
         var key, mapLayers, value;
+        if ($(e.target).prop('class') === 'swatch') {
+          $(e.target).css('border', '2px solid black');
+          $(e.target).css('border-radius', '10%');
+        }
         mapLayers = this._m._layers;
         for (key in mapLayers) {
           value = mapLayers[key];
           if (value.options && value.options.className === ("range-" + e.target.id)) {
+            value.bringToFront();
             value.setStyle({
               weight: 3,
-              opacity: 1,
+              opacity: 0.9,
               fillOpacity: 0.9
             });
           }
@@ -353,13 +358,14 @@
       L.DomEvent.addListener(div, 'mouseout', (function(e) {
         var key, mapLayers, value;
         mapLayers = this._m._layers;
-        console.log(this._m);
+        $(e.target).css('border', '0px solid black');
+        $(e.target).css('border-radius', '0%');
         for (key in mapLayers) {
           value = mapLayers[key];
           if (value.options && value.options.className === ("range-" + e.target.id)) {
             value.setStyle({
               weight: 1,
-              opacity: 0.1,
+              opacity: 0.4,
               fillOpacity: 1
             });
           }

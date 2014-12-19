@@ -7,7 +7,7 @@
   getStyle = function(feature) {
     return {
       weight: 1,
-      opacity: 0.1,
+      opacity: 0.4,
       color: "black",
       fillOpacity: 1,
       fillColor: leafleg.getColorByRangeAndSize(feature.properties.per_capt, feature.properties.density).c,

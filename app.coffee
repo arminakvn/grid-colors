@@ -2,7 +2,7 @@ leafleg = L.leaflegend().color1("yellow").color2("blue").steps(4).xsize(4).ysize
 getStyle = (feature) ->
 
   weight: 1
-  opacity: 0.1
+  opacity: 0.4
   color: "black"
   fillOpacity: 1
   fillColor: leafleg.getColorByRangeAndSize(feature.properties.per_capt,feature.properties.density).c
@@ -25,10 +25,6 @@ mousemove = (e) ->
   legendElement = L.DomUtil.get("#{colorIndex}")
   $(legendElement).css('border', '3px solid black')
   $(legendElement).css('border-radius', '10%')
-  # popup.setLatLng e.latlng
-  # popup.setContent "<div class=\"marker-title\">" + layer.feature.properties.name + "</div>" + layer.feature.properties.density + " for x values and " + layer.feature.properties.per_capt + " for y values "
-  # popup.openOn map  unless popup._map
-  # window.clearTimeout closeTooltip
   
   # highlight feature
 
@@ -64,20 +60,6 @@ highlightByLegend = (legendColor) ->
       xVal = val.x_val
       yVal = val.y_val
 
-
-
-  # for key, val of map.getPanes().overlayPane.children[0].children
-  #   inner = val.innerHTML.split " "
-  #   if inner[7] = chroma.color(legendColor).hex()
-
-  #     inner[6] = "stroke-width='6'"
-  #     # innerStrokeText.replace("stroke-width='2'", "stroke-width='6'")
-
-
-
-  #     val.innerHTML = inner.join " "
-  #     # map.getPanes().overlayPane.children[0].appendChild(val)
-
   mapLayers = map._layers 
 
 
@@ -85,13 +67,6 @@ highlightByLegend = (legendColor) ->
     x_val = val.feature.properties.density if val.feature
     y_val = val.feature.properties.per_capt if val.feature
     layer = val if x_val == xVal and y_val == yVal
-
-
-  # return layer
-  # layer.setStyle
-  #   weight: 3
-  #   opacity: 0.3
-  #   fillOpacity: 0.9
 
 
 
@@ -118,7 +93,6 @@ legend.onAdd = (map) ->
 legend.addTo map
 $("li .swatch").hover (->
   highlightByLegend $(this).css("background-color") if $(this).attr("id") isnt undefined
-  # return
 )
 
 closeTooltip = undefined

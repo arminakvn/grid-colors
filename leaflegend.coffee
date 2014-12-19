@@ -312,7 +312,7 @@ L.LeafLegend = L.Class.extend(
         colum_from = gdrow[j]
         for i in [0...xsize]
             legendRowObject.push("<span class=\"swatch\" style=\"background:" + gdrow[(j*xsize)+i].c + "; position: initial;  display:block; float:left; height:" + @options.cell_width + "px; width:" + @options.cell_width+ "px;\"" + "id=" + gdrow[(j*xsize)+i].i + "></span> ")
-            legendRowObject.push("<span class=\"swatch\" style=\"background:white; position: relative; display:block; float:left; height:" + @options.cell_width + "px; width:" + @options.gutter_width+ "px;\"" + "></span> ")
+            legendRowObject.push("<span class=\"swatch-gutter\" style=\"background:white; position: relative; display:block; float:left; height:" + @options.cell_width + "px; width:" + @options.gutter_width+ "px;\"" + "></span> ")
             i++
         to = gdrow[j+1].i * xintervalSize
         gridwidth = @options.gridwidth + @options.row_label_width
@@ -336,23 +336,28 @@ L.LeafLegend = L.Class.extend(
     div = document.getElementById("leaflegend")
     div.innerHTML += legend
     L.DomEvent.addListener div, 'mouseover', ((e) ->
+        if $(e.target).prop('class') == 'swatch'
+            $(e.target).css('border', '2px solid black')
+            $(e.target).css('border-radius', '10%')
         mapLayers = @_m._layers
         for key, value of mapLayers
             if value.options and value.options.className == "range-#{e.target.id}"
+                value.bringToFront()
                 value.setStyle
                     weight: 3
-                    opacity: 1
+                    opacity: 0.9
                     fillOpacity: 0.9
         return
     ), this
     L.DomEvent.addListener div, 'mouseout', ((e) ->
         mapLayers = @_m._layers
-        console.log @_m
+        $(e.target).css('border', '0px solid black')
+        $(e.target).css('border-radius', '0%')
         for key, value of mapLayers
             if value.options and value.options.className == "range-#{e.target.id}"
                 value.setStyle
                     weight: 1
-                    opacity: 0.1
+                    opacity: 0.4
                     fillOpacity: 1
         return
     ), this
