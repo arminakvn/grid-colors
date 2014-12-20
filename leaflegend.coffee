@@ -356,6 +356,7 @@ L.LeafLegend = L.Class.extend(
         $(e.target).css('cursor','default')
         mapLayers = @_m._layers
         $(e.target).css('border', '0px solid black')
+        $(e.target).css('opacity', '0.8')
         $(e.target).css('border-radius', '0%')
         for key, value of mapLayers
             if value.options and value.options.className == "range-#{e.target.id}"

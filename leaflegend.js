@@ -363,6 +363,7 @@
         $(e.target).css('cursor', 'default');
         mapLayers = this._m._layers;
         $(e.target).css('border', '0px solid black');
+        $(e.target).css('opacity', '0.8');
         $(e.target).css('border-radius', '0%');
         for (key in mapLayers) {
           value = mapLayers[key];
