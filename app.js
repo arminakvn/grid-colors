@@ -32,7 +32,7 @@
     }
     layer.setStyle({
       weight: 3,
-      opacity: 0.3,
+      opacity: 0.8,
       fillOpacity: 0.9
     });
     if (!L.Browser.ie && !L.Browser.opera) {

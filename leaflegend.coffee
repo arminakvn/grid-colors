@@ -337,8 +337,10 @@ L.LeafLegend = L.Class.extend(
     div = document.getElementById("leaflegend")
     div.innerHTML += legend
     L.DomEvent.addListener div, 'mouseover', ((e) ->
+        $(e.target).css('cursor','pointer')
         if $(e.target).prop('class') == 'swatch'
             $(e.target).css('border', '3px solid black')
+            $(e.target).css('opacity', '0.8')
             $(e.target).css('border-radius', '10%')
         mapLayers = @_m._layers
         for key, value of mapLayers
@@ -351,6 +353,7 @@ L.LeafLegend = L.Class.extend(
         return
     ), this
     L.DomEvent.addListener div, 'mouseout', ((e) ->
+        $(e.target).css('cursor','default')
         mapLayers = @_m._layers
         $(e.target).css('border', '0px solid black')
         $(e.target).css('border-radius', '0%')

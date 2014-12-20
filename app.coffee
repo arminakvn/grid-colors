@@ -23,7 +23,7 @@ mousemove = (e) ->
   # highlight feature
   layer.setStyle
     weight: 3
-    opacity: 0.3
+    opacity: 0.8
     fillOpacity: 0.9
 
   layer.bringToFront()  if not L.Browser.ie and not L.Browser.opera

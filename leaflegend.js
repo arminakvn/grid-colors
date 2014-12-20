@@ -339,8 +339,10 @@
       div.innerHTML += legend;
       L.DomEvent.addListener(div, 'mouseover', (function(e) {
         var key, mapLayers, value;
+        $(e.target).css('cursor', 'pointer');
         if ($(e.target).prop('class') === 'swatch') {
           $(e.target).css('border', '3px solid black');
+          $(e.target).css('opacity', '0.8');
           $(e.target).css('border-radius', '10%');
         }
         mapLayers = this._m._layers;
@@ -358,6 +360,7 @@
       }), this);
       L.DomEvent.addListener(div, 'mouseout', (function(e) {
         var key, mapLayers, value;
+        $(e.target).css('cursor', 'default');
         mapLayers = this._m._layers;
         $(e.target).css('border', '0px solid black');
         $(e.target).css('border-radius', '0%');
