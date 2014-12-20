@@ -287,7 +287,6 @@ L.LeafLegend = L.Class.extend(
     this
 
   getLegendHTML: (map) ->
-    console.log @
     this.map = map
     @_m = map
     xmin =@options.xmin
@@ -301,6 +300,7 @@ L.LeafLegend = L.Class.extend(
     legend = []
     legendObject = []
     legendRowObject = []
+    @_legendObject = []
     from = undefined
     to = undefined
     i = 0
@@ -318,7 +318,7 @@ L.LeafLegend = L.Class.extend(
         gridwidth = @options.gridwidth + @options.row_label_width
         legendObject.push("<li style=\"height:" + @options.gutter_width + "px; position: relative; width:" + gridwidth + "px;" + "\">" +  "</li>")  # +"<span>" +  from + " to " + to +  "</span> ")
         legendObject.push("<li style=\"height:" + @options.cell_width + "px; position: relative; width:" + gridwidth + "px;" + "\">" + legendRowObject.join("") + "\v " + "\v " + "\v " + "\v " + "\v " +gdrow[j].x+ "</li>")
-        # here a lookup table needs to be made to have dictionaties that has i which is index equals a range wich is the values it covers
+        @_legendObject.push legendObject
         j++
     legend.push "<ul style=\"width: " + gridwidth + "px; list-style-type:none\">" + legendObject.join("") + "</ul>" 
 
@@ -326,6 +326,7 @@ L.LeafLegend = L.Class.extend(
       options:
         position: "bottomright"
       onAdd: (map) =>
+
         @_m = map if @_m is undefined  
         if @_legendDomEl is undefined
             @_legendDomEl = L.DomUtil.create("div", "info legend")
@@ -337,7 +338,7 @@ L.LeafLegend = L.Class.extend(
     div.innerHTML += legend
     L.DomEvent.addListener div, 'mouseover', ((e) ->
         if $(e.target).prop('class') == 'swatch'
-            $(e.target).css('border', '2px solid black')
+            $(e.target).css('border', '3px solid black')
             $(e.target).css('border-radius', '10%')
         mapLayers = @_m._layers
         for key, value of mapLayers
@@ -378,14 +379,35 @@ L.LeafLegend = L.Class.extend(
         y_out = ((each.y).split "-")[1]
 
         try
-            if each.c.hex() == event.target.options.fillColor.hex() #(event.target.feature.properties.density in [x_in...x_out]) and (event.target.feature.properties.per_capt in [y_in...y_out])
+            if each.c.hex() == event.target.options.fillColor.hex()
                 try
                     return each.i
                 catch e
         catch e
             if each.c.hex() == event.layer.options.fillColor.hex()
                 return each.i
-        
+   
+  highlightByFeature: (e) ->
+    if e.target.options
+        className_ = e.target.options.className
+    else
+        for key, value of e.target._layers
+            className_ = value.options.className if value.options.className isnt undefined
+    class_Name= className_.replace("range-", "")
+    legEl = L.DomUtil.get(class_Name)
+    $(legEl).css('border', '3px solid black')
+    $(legEl).css('border-radius', '10%')
+
+  resetHighlightByFeature: (e) ->
+    if e.target.options
+        className_ = e.target.options.className
+    else
+        for key, value of e.target._layers
+            className_ = value.options.className if value.options.className isnt undefined
+    class_Name= className_.replace("range-", "")
+    legEl = L.DomUtil.get(class_Name)
+    $(legEl).css('border', '0px solid black')
+    $(legEl).css('border-radius', '0%')
 
   getColorByRangeAndSize: (x_val, y_val) ->
     ix_intervals = Math.floor(x_val / @options.xintervalSize)

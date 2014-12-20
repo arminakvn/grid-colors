@@ -280,7 +280,6 @@
     },
     getLegendHTML: function(map) {
       var col, colum_from, div, from, gdrow, gridwidth, i, increment_in_em, j, legend, legendObject, legendRowObject, legend_el, textControl, to, xintervalSize, xmin, xsize, yintervalSize, ymin, ysize, _i, _j, _k;
-      console.log(this);
       this.map = map;
       this._m = map;
       xmin = this.options.xmin;
@@ -294,6 +293,7 @@
       legend = [];
       legendObject = [];
       legendRowObject = [];
+      this._legendObject = [];
       from = void 0;
       to = void 0;
       i = 0;
@@ -314,6 +314,7 @@
         gridwidth = this.options.gridwidth + this.options.row_label_width;
         legendObject.push("<li style=\"height:" + this.options.gutter_width + "px; position: relative; width:" + gridwidth + "px;" + "\">" + "</li>");
         legendObject.push("<li style=\"height:" + this.options.cell_width + "px; position: relative; width:" + gridwidth + "px;" + "\">" + legendRowObject.join("") + "\v " + "\v " + "\v " + "\v " + "\v " + gdrow[j].x + "</li>");
+        this._legendObject.push(legendObject);
         j++;
       }
       legend.push("<ul style=\"width: " + gridwidth + "px; list-style-type:none\">" + legendObject.join("") + "</ul>");
@@ -339,7 +340,7 @@
       L.DomEvent.addListener(div, 'mouseover', (function(e) {
         var key, mapLayers, value;
         if ($(e.target).prop('class') === 'swatch') {
-          $(e.target).css('border', '2px solid black');
+          $(e.target).css('border', '3px solid black');
           $(e.target).css('border-radius', '10%');
         }
         mapLayers = this._m._layers;
@@ -401,6 +402,42 @@
           }
         }
       }
+    },
+    highlightByFeature: function(e) {
+      var className_, class_Name, key, legEl, value, _ref;
+      if (e.target.options) {
+        className_ = e.target.options.className;
+      } else {
+        _ref = e.target._layers;
+        for (key in _ref) {
+          value = _ref[key];
+          if (value.options.className !== void 0) {
+            className_ = value.options.className;
+          }
+        }
+      }
+      class_Name = className_.replace("range-", "");
+      legEl = L.DomUtil.get(class_Name);
+      $(legEl).css('border', '3px solid black');
+      return $(legEl).css('border-radius', '10%');
+    },
+    resetHighlightByFeature: function(e) {
+      var className_, class_Name, key, legEl, value, _ref;
+      if (e.target.options) {
+        className_ = e.target.options.className;
+      } else {
+        _ref = e.target._layers;
+        for (key in _ref) {
+          value = _ref[key];
+          if (value.options.className !== void 0) {
+            className_ = value.options.className;
+          }
+        }
+      }
+      class_Name = className_.replace("range-", "");
+      legEl = L.DomUtil.get(class_Name);
+      $(legEl).css('border', '0px solid black');
+      return $(legEl).css('border-radius', '0%');
     },
     getColorByRangeAndSize: function(x_val, y_val) {
       var e, index_dicts, ix_intervals, iy_intervals;

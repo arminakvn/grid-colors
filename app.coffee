@@ -18,16 +18,9 @@ onEachFeature = (feature, layer) ->
   return
 mousemove = (e) ->
   layer = e.target
-  console.log e
-
-  colorIndex = leafleg.getIndexByColor e
-  console.log "index", colorIndex
-  legendElement = L.DomUtil.get("#{colorIndex}")
-  $(legendElement).css('border', '3px solid black')
-  $(legendElement).css('border-radius', '10%')
-  
+  #highlight legend
+  leafleg.highlightByFeature(e) if e.target
   # highlight feature
-
   layer.setStyle
     weight: 3
     opacity: 0.3
@@ -40,8 +33,11 @@ mouseout = (e) ->
   layer = e.target
   colorIndex = leafleg.getIndexByColor e
   legendElement = document.getElementById(colorIndex)
-  $(legendElement).css('border', '0px solid white')
-  $(legendElement).css('border-radius', '0%')
+  leafleg.resetHighlightByFeature(e) if e.target
+  # slowReset = window.setTimeout(-> 
+  #   leafleg.resetHighlightByFeature(e) if e.target
+  #   return
+  # , 100)  
   closeTooltip = window.setTimeout(->
     map.closePopup()
     return
@@ -50,25 +46,6 @@ mouseout = (e) ->
 zoomToFeature = (e) ->
   map.fitBounds e.target.getBounds()
   return
-
-highlightByLegend = (legendColor) ->
-
-
-  for key, val of leafleg.options.index_dicts
-  
-    if val.color.hex() == chroma.color(legendColor).hex()
-      xVal = val.x_val
-      yVal = val.y_val
-
-  mapLayers = map._layers 
-
-
-  for key, val of mapLayers
-    x_val = val.feature.properties.density if val.feature
-    y_val = val.feature.properties.per_capt if val.feature
-    layer = val if x_val == xVal and y_val == yVal
-
-
 
 L.mapbox.accessToken = "pk.eyJ1IjoiYXJtaW5hdm4iLCJhIjoiSTFteE9EOCJ9.iDzgmNaITa0-q-H_jw1lJw"
 map = L.mapbox.map("map").setView([
@@ -84,17 +61,12 @@ legend = L.control(position: "bottomright")
 
 legend.onAdd = (map) ->
   leafleg = L.leaflegend().color1("yellow").color2("blue").steps(4).xsize(4).ysize(4).makeGrid()
-  console.log "L", L
   div = undefined
   div = document.getElementById("leaflegend")
   leg_div = leafleg.getLegendHTML(map)
   div
 
 legend.addTo map
-$("li .swatch").hover (->
-  highlightByLegend $(this).css("background-color") if $(this).attr("id") isnt undefined
-)
-
 closeTooltip = undefined
 
 
