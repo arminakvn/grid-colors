@@ -339,7 +339,7 @@ L.LeafLegend = L.Class.extend(
     L.DomEvent.addListener div, 'mouseover', ((e) ->
         $(e.target).css('cursor','pointer')
         if $(e.target).prop('class') == 'swatch'
-            $(e.target).css('border', '3px solid black')
+            $(e.target).css('border', '3px solid white')
             $(e.target).css('opacity', '0.8')
             $(e.target).css('border-radius', '10%')
         mapLayers = @_m._layers
@@ -355,8 +355,8 @@ L.LeafLegend = L.Class.extend(
     L.DomEvent.addListener div, 'mouseout', ((e) ->
         $(e.target).css('cursor','default')
         mapLayers = @_m._layers
-        $(e.target).css('border', '0px solid black')
-        $(e.target).css('opacity', '0.8')
+        $(e.target).css('border', '0px solid white')
+        $(e.target).css('opacity', '1')
         $(e.target).css('border-radius', '0%')
         for key, value of mapLayers
             if value.options and value.options.className == "range-#{e.target.id}"
@@ -399,7 +399,7 @@ L.LeafLegend = L.Class.extend(
             className_ = value.options.className if value.options.className isnt undefined
     class_Name= className_.replace("range-", "")
     legEl = L.DomUtil.get(class_Name)
-    $(legEl).css('border', '3px solid black')
+    $(legEl).css('border', '3px solid white')
     $(legEl).css('border-radius', '10%')
 
   resetHighlightByFeature: (e) ->
@@ -410,7 +410,7 @@ L.LeafLegend = L.Class.extend(
             className_ = value.options.className if value.options.className isnt undefined
     class_Name= className_.replace("range-", "")
     legEl = L.DomUtil.get(class_Name)
-    $(legEl).css('border', '0px solid black')
+    $(legEl).css('border', '0px solid white')
     $(legEl).css('border-radius', '0%')
 
   getColorByRangeAndSize: (x_val, y_val) ->

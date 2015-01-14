@@ -341,7 +341,7 @@
         var key, mapLayers, value;
         $(e.target).css('cursor', 'pointer');
         if ($(e.target).prop('class') === 'swatch') {
-          $(e.target).css('border', '3px solid black');
+          $(e.target).css('border', '3px solid white');
           $(e.target).css('opacity', '0.8');
           $(e.target).css('border-radius', '10%');
         }
@@ -362,8 +362,8 @@
         var key, mapLayers, value;
         $(e.target).css('cursor', 'default');
         mapLayers = this._m._layers;
-        $(e.target).css('border', '0px solid black');
-        $(e.target).css('opacity', '0.8');
+        $(e.target).css('border', '0px solid white');
+        $(e.target).css('opacity', '1');
         $(e.target).css('border-radius', '0%');
         for (key in mapLayers) {
           value = mapLayers[key];
@@ -422,7 +422,7 @@
       }
       class_Name = className_.replace("range-", "");
       legEl = L.DomUtil.get(class_Name);
-      $(legEl).css('border', '3px solid black');
+      $(legEl).css('border', '3px solid white');
       return $(legEl).css('border-radius', '10%');
     },
     resetHighlightByFeature: function(e) {
@@ -440,7 +440,7 @@
       }
       class_Name = className_.replace("range-", "");
       legEl = L.DomUtil.get(class_Name);
-      $(legEl).css('border', '0px solid black');
+      $(legEl).css('border', '0px solid white');
       return $(legEl).css('border-radius', '0%');
     },
     getColorByRangeAndSize: function(x_val, y_val) {

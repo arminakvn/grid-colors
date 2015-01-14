@@ -46,9 +46,7 @@
     layer = e.target;
     colorIndex = leafleg.getIndexByColor(e);
     legendElement = document.getElementById(colorIndex);
-    if (e.target) {
-      leafleg.resetHighlightByFeature(e);
-    }
+    leafleg.resetHighlightByFeature(e);
     closeTooltip = window.setTimeout(function() {
       map.closePopup();
     }, 100);

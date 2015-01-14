@@ -33,7 +33,7 @@ mouseout = (e) ->
   layer = e.target
   colorIndex = leafleg.getIndexByColor e
   legendElement = document.getElementById(colorIndex)
-  leafleg.resetHighlightByFeature(e) if e.target
+  leafleg.resetHighlightByFeature(e) # if e.target
   # slowReset = window.setTimeout(-> 
   #   leafleg.resetHighlightByFeature(e) if e.target
   #   return
