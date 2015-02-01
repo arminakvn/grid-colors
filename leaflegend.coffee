@@ -7,7 +7,7 @@ L.LeafLegend = L.Class.extend(
     color2: ""
     steps: 4
     xmin: 0
-    xmax: 876
+    xmax: 49
     ymin: 0
     ymax:  1190
     xsize: 4
@@ -30,6 +30,7 @@ L.LeafLegend = L.Class.extend(
     gutter_width: 0
     row_label_width: 120
     index_dicts: []
+    nameCols:["",""]
 
   initialize: (data, options) ->
     _this = this
@@ -111,8 +112,12 @@ L.LeafLegend = L.Class.extend(
   indexDicts: (newIndexDicts) ->
     @options.index_dicts = newIndexDicts
     this
+  nameCols: (newNameCols) ->
+    @options.nameCols = newNameCols
+    this
 
-
+  nameLegCols: (horizarntalvertical) ->
+    @nameCols horizarntalvertical
 
   makeGrid: ->
     color1 = @options.color1 # = chroma(68.67, -13.07, -46.59, 'lab') # this can be a chroma color object. e.g. chroma(68.67, -13.07, -46.59, 'lab') or a color e.g. 'green'
@@ -190,7 +195,7 @@ L.LeafLegend = L.Class.extend(
     ysize = leaflegend.options.ysize
     bez = 'checked'
     cell_width = 40
-    gutter_width = 1
+    gutter_width = 3
     icreament_size = 1 / grid_size 
     steps = leaflegend.options.steps 
     @cell_width cell_width
@@ -228,7 +233,7 @@ L.LeafLegend = L.Class.extend(
     leg_el.css('width', gridwidth+ @options.row_label_width) 
     leg_el.css('height', gridwidth) 
     leg_el.css('margin-right', cell_width)
-    leg_el.css('margin-bottom', cell_width) 
+    leg_el.css('margin-bottom', 2 * cell_width) 
     leg_el.css('width', gridwidth + @options.row_label_width).html('')
     
     #### d3 version #####
@@ -305,7 +310,9 @@ L.LeafLegend = L.Class.extend(
     to = undefined
     i = 0
     increment_in_em = 3.5 # setting up location paramater for legend labels
-    legendObject.push("<span style=\"height:" + @options.cell_width +  "px;\">" + "<div style=\"width:" + (2*@options.cell_width) + "px; position: relative; height: 0; text-align: left;" + "  -webkit-transform: translate(#{(col)*increment_in_em+1-increment_in_em}em,-6em); -moz-transform: translate(#{(col)*increment_in_em+1-increment_in_em}em,-6em); -o-transform: translate(#{(col)*increment_in_em+1-increment_in_em}em,-6em); -ms-transform: translate(#{(col)*increment_in_em+1-increment_in_em}em,-6em); transform: translate(#{(col)*increment_in_em+1-increment_in_em}em,-6em);\">" + "<div style=\"-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg);\">" + gdrow[col].y + "</div></div></span>") for col in [0...ysize]
+    legendObject.push("<span style=\"height:" + @options.cell_width +  "px;\">" + "<div style=\"width:" + (2*@options.cell_width) + "px; position: relative; height: 0; text-align: left; font-weight: bold;" + "  -webkit-transform: translate(#{1*increment_in_em-6-increment_in_em}em,-7em); -moz-transform: translate(#{1*increment_in_em-6-increment_in_em}em,-7em); -o-transform: translate(#{1*increment_in_em-6-increment_in_em}em,-7em); -ms-transform: translate(#{1*increment_in_em-6-increment_in_em}em,-7em); transform: translate(#{1*increment_in_em-4-increment_in_em}em,-5em);\">" + "<div style=\"-webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg);\">" + @.options.nameCols[1] + "</div></div></span>")
+    legendObject.push("<span style=\"height:" + @options.cell_width +  "px;\">" + "<div style=\"width:" + (2*@options.cell_width) + "px; position: relative; height: 0; text-align: left;" + "  -webkit-transform: translate(#{(col)*increment_in_em+1-increment_in_em}em,-6em); -moz-transform: translate(#{(col)*increment_in_em+1-increment_in_em}em,-6em); -o-transform: translate(#{(col)*increment_in_em+1-increment_in_em}em,-6em); -ms-transform: translate(#{(col)*increment_in_em+1-increment_in_em}em,-6em); transform: translate(#{(col)*increment_in_em+4-increment_in_em}em,-4em);\">" + "<div style=\"-webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg);\">" + gdrow[col].y + "</div></div></span>") for col in [0...ysize]
+    legendObject.push("<span style=\"height:" + @options.cell_width +  "px;\">" + "<div style=\"width:" + (2*@options.cell_width) + "px; position: relative; height: 0; text-align: left; font-weight: bold;" + "  -webkit-transform: translate(#{xsize*increment_in_em+6+increment_in_em}em,-7em); -moz-transform: translate(#{xsize*increment_in_em+6+increment_in_em}em,-7em); -o-transform: translate(#{xsize*increment_in_em+6+increment_in_em}em,-7em); -ms-transform: translate(#{xsize*increment_in_em+6+increment_in_em}em,-7em); transform: translate(#{xsize*increment_in_em+2}em,#{ysize*increment_in_em}em);\">" + "<div style=\"-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg);\">" + @.options.nameCols[0] + "</div></div></span>")
     for j in [0...ysize]
         legendRowObject = []
         from = gdrow[j].i * xintervalSize
@@ -336,6 +343,7 @@ L.LeafLegend = L.Class.extend(
     )
     div = document.getElementById("leaflegend")
     div.innerHTML += legend
+    # console.log "div", div
     L.DomEvent.addListener div, 'mouseover', ((e) ->
         $(e.target).css('cursor','pointer')
         if $(e.target).prop('class') == 'swatch'

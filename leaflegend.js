@@ -12,7 +12,7 @@
       color2: "",
       steps: 4,
       xmin: 0,
-      xmax: 876,
+      xmax: 49,
       ymin: 0,
       ymax: 1190,
       xsize: 4,
@@ -34,7 +34,8 @@
       yintervalSize: 10,
       gutter_width: 0,
       row_label_width: 120,
-      index_dicts: []
+      index_dicts: [],
+      nameCols: ["", ""]
     },
     initialize: function(data, options) {
       var _this;
@@ -141,6 +142,13 @@
       this.options.index_dicts = newIndexDicts;
       return this;
     },
+    nameCols: function(newNameCols) {
+      this.options.nameCols = newNameCols;
+      return this;
+    },
+    nameLegCols: function(horizarntalvertical) {
+      return this.nameCols(horizarntalvertical);
+    },
     makeGrid: function() {
       var $palettes, bez, cell_width, cl1, cl2, color1, color2, cols1, colurs, colurschema1, colurschema2, colurschema3, colurschema4, colurseq, colursstatements, gdc, gdrow, grid_size, grid_size_effective, gridwidth, gutter_width, height, highlightCell, i, icreament_size, j, leaflegend, leg_el, legend_el, m, n, pallets, rectGrid, rects, steps, width, x, x_size, xintervalSize, xintervals, xsize, y_size, yintervalSize, yintervals, ysize, _i, _j, _k, _l, _m, _n, _o, _p, _q, _r, _s;
       color1 = this.options.color1;
@@ -219,7 +227,7 @@
       ysize = leaflegend.options.ysize;
       bez = 'checked';
       cell_width = 40;
-      gutter_width = 1;
+      gutter_width = 3;
       icreament_size = 1 / grid_size;
       steps = leaflegend.options.steps;
       this.cell_width(cell_width);
@@ -245,7 +253,7 @@
       leg_el.css('width', gridwidth + this.options.row_label_width);
       leg_el.css('height', gridwidth);
       leg_el.css('margin-right', cell_width);
-      leg_el.css('margin-bottom', cell_width);
+      leg_el.css('margin-bottom', 2 * cell_width);
       leg_el.css('width', gridwidth + this.options.row_label_width).html('');
       gdc = {};
       gdrow = [];
@@ -298,9 +306,11 @@
       to = void 0;
       i = 0;
       increment_in_em = 3.5;
+      legendObject.push("<span style=\"height:" + this.options.cell_width + "px;\">" + "<div style=\"width:" + (2 * this.options.cell_width) + "px; position: relative; height: 0; text-align: left; font-weight: bold;" + ("  -webkit-transform: translate(" + (1 * increment_in_em - 6 - increment_in_em) + "em,-7em); -moz-transform: translate(" + (1 * increment_in_em - 6 - increment_in_em) + "em,-7em); -o-transform: translate(" + (1 * increment_in_em - 6 - increment_in_em) + "em,-7em); -ms-transform: translate(" + (1 * increment_in_em - 6 - increment_in_em) + "em,-7em); transform: translate(" + (1 * increment_in_em - 4 - increment_in_em) + "em,-5em);\">") + "<div style=\"-webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg);\">" + this.options.nameCols[1] + "</div></div></span>");
       for (col = _i = 0; 0 <= ysize ? _i < ysize : _i > ysize; col = 0 <= ysize ? ++_i : --_i) {
-        legendObject.push("<span style=\"height:" + this.options.cell_width + "px;\">" + "<div style=\"width:" + (2 * this.options.cell_width) + "px; position: relative; height: 0; text-align: left;" + ("  -webkit-transform: translate(" + (col * increment_in_em + 1 - increment_in_em) + "em,-6em); -moz-transform: translate(" + (col * increment_in_em + 1 - increment_in_em) + "em,-6em); -o-transform: translate(" + (col * increment_in_em + 1 - increment_in_em) + "em,-6em); -ms-transform: translate(" + (col * increment_in_em + 1 - increment_in_em) + "em,-6em); transform: translate(" + (col * increment_in_em + 1 - increment_in_em) + "em,-6em);\">") + "<div style=\"-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg);\">" + gdrow[col].y + "</div></div></span>");
+        legendObject.push("<span style=\"height:" + this.options.cell_width + "px;\">" + "<div style=\"width:" + (2 * this.options.cell_width) + "px; position: relative; height: 0; text-align: left;" + ("  -webkit-transform: translate(" + (col * increment_in_em + 1 - increment_in_em) + "em,-6em); -moz-transform: translate(" + (col * increment_in_em + 1 - increment_in_em) + "em,-6em); -o-transform: translate(" + (col * increment_in_em + 1 - increment_in_em) + "em,-6em); -ms-transform: translate(" + (col * increment_in_em + 1 - increment_in_em) + "em,-6em); transform: translate(" + (col * increment_in_em + 4 - increment_in_em) + "em,-4em);\">") + "<div style=\"-webkit-transform: rotate(-45deg); -moz-transform: rotate(-45deg);\">" + gdrow[col].y + "</div></div></span>");
       }
+      legendObject.push("<span style=\"height:" + this.options.cell_width + "px;\">" + "<div style=\"width:" + (2 * this.options.cell_width) + "px; position: relative; height: 0; text-align: left; font-weight: bold;" + ("  -webkit-transform: translate(" + (xsize * increment_in_em + 6 + increment_in_em) + "em,-7em); -moz-transform: translate(" + (xsize * increment_in_em + 6 + increment_in_em) + "em,-7em); -o-transform: translate(" + (xsize * increment_in_em + 6 + increment_in_em) + "em,-7em); -ms-transform: translate(" + (xsize * increment_in_em + 6 + increment_in_em) + "em,-7em); transform: translate(" + (xsize * increment_in_em + 2) + "em," + (ysize * increment_in_em) + "em);\">") + "<div style=\"-webkit-transform: rotate(0deg); -moz-transform: rotate(0deg);\">" + this.options.nameCols[0] + "</div></div></span>");
       for (j = _j = 0; 0 <= ysize ? _j < ysize : _j > ysize; j = 0 <= ysize ? ++_j : --_j) {
         legendRowObject = [];
         from = gdrow[j].i * xintervalSize;
